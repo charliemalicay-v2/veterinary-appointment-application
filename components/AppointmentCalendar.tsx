@@ -41,6 +41,33 @@ type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
+interface PetImage {
+    fileObject: File | null;
+    fileName: string;
+    type: string;
+    size: string;
+}
+
+interface AppointmentData {
+    id: number;
+    veterinaryName: string;
+    veterinaryServices: string;
+    petName: string;
+    petBreed: string;
+    petAge: number;
+    petGender: string;
+    petImage: PetImage;
+    ownerName: string;
+    appointmentDate: string;
+}
+
+interface DisplayAppointmentData extends AppointmentData {
+    top: string;
+    backgroundColor: string;
+    borderColor: string;
+    iconIndex: number;
+}
+
 
 const AppointmentCalendar = () => {
     const [currentDate, setCurrentDate] = React.useState(moment());
@@ -53,8 +80,8 @@ const AppointmentCalendar = () => {
         setHours(setMinutes(new Date(), 0), 9),
     );
 
-    const [listAppointmentData, setListAppointmentData] = React.useState<any[]>([]);
-    const [displayAppointmentData, setDisplayAppointmentData] = React.useState<any[]>([]);
+    const [listAppointmentData, setListAppointmentData] = React.useState<AppointmentData[]>([]);
+    const [displayAppointmentData, setDisplayAppointmentData] = React.useState<DisplayAppointmentData[]>([]);
 
     const [appointmentData, setAppointmentData] = React.useState({
         id: -1,
@@ -74,7 +101,7 @@ const AppointmentCalendar = () => {
         appointmentDate: ""
     });
 
-    const [selectedAppointmentData, setSelectedAppointmentData] = React.useState({
+    const [selectedAppointmentData, setSelectedAppointmentData] = React.useState<AppointmentData>({
         id: -1,
         veterinaryName: "",
         veterinaryServices: "",
@@ -148,7 +175,7 @@ const AppointmentCalendar = () => {
         return `${topPlacement + 4}px`;
     }
 
-    const handleReschedDateClick = (selectedData: any) => {
+    const handleReschedDateClick = (selectedData: AppointmentData) => {
         setSelectedAppointmentData(selectedData);
         setTriggerReSchedDate(true);
     }
@@ -164,7 +191,7 @@ const AppointmentCalendar = () => {
         inputUploadFileRef.current?.click();
     }
 
-    const handleViewAppointmentClick = (selectedData: any) => {
+    const handleViewAppointmentClick = (selectedData: AppointmentData) => {
         setOpenAppointmentInfo(true);
         setSelectedAppointmentData(selectedData);
     }
