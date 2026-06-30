@@ -447,25 +447,6 @@ const AppointmentCalendar = () => {
                                                 appointmentDate: values.appointmentDate
                                             })
 
-                                            console.log("values:", JSON.stringify({
-                                                veterinaryName: values.veterinaryName,
-                                                veterinaryServices: values.veterinaryServices,
-                                                petName: values.petName,
-                                                petBreed: values.petBreed,
-                                                petAge: parseInt(values.petAge) || 1,
-                                                petGender: values.petGender,
-                                                petImage: (() => {
-                                                    const file = (values as any).petImage;
-                                                    return {
-                                                        fileName: file instanceof File ? file.name : "",
-                                                        type: file instanceof File ? file.type : "",
-                                                        size: file instanceof File ? `${file.size} bytes` : ""
-                                                    };
-                                                })(),
-                                                ownerName: values.ownerName,
-                                                appointmentDate: values.appointmentDate
-                                            }, null, 2));
-
                                             setSubmitting(false);
                                             onClose();
                                             }, 400);
