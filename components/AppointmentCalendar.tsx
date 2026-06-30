@@ -63,6 +63,18 @@ interface DisplayAppointmentData extends AppointmentData {
     iconIndex: number;
 }
 
+interface FormValues {
+    veterinaryName: string;
+    veterinaryServices: string;
+    petName: string;
+    petBreed: string;
+    petAge: string;
+    petGender: string;
+    petImage: File | string;
+    ownerName: string;
+    appointmentDate: string;
+}
+
 
 const AppointmentCalendar = () => {
     const [currentDate, setCurrentDate] = React.useState(moment());
@@ -202,8 +214,8 @@ const AppointmentCalendar = () => {
         const modDummyData = dummyAppointmentData.map(data => ({
                 ...data,
                 top: handlePlacingAppointment(data.appointmentDate),
-                backgroundColor: Math.random().toString(16).substr(-6),
-                borderColor: Math.random().toString(16).substr(-6),
+                backgroundColor: Math.random().toString(16).substr(-6).padStart(6, '0'),
+                borderColor: Math.random().toString(16).substr(-6).padStart(6, '0'),
                 iconIndex: Math.floor(Math.random() * veterinaryIconsConstants.length - 1) + 1
         }));
 
@@ -241,8 +253,8 @@ const AppointmentCalendar = () => {
                     {
                         ...listAppointmentData[listAppointmentData.length - 1],
                         top: handlePlacingAppointment(listAppointmentData[listAppointmentData.length - 1].appointmentDate),
-                        backgroundColor: Math.random().toString(16).substr(-6),
-                        borderColor: Math.random().toString(16).substr(-6),
+                        backgroundColor: Math.random().toString(16).substr(-6).padStart(6, '0'),
+                        borderColor: Math.random().toString(16).substr(-6).padStart(6, '0'),
                         iconIndex: Math.floor(Math.random() * veterinaryIconsConstants.length-1) + 1
                     }]
             )
@@ -338,12 +350,9 @@ const AppointmentCalendar = () => {
                         if (moment(data.appointmentDate).format('MMMM D YYYY') === moment(currentDate).format('MMMM D YYYY'))
                             return (
                                 <Box key={index} className="!absolute !rounded-xl !p-3 !flex !flex-row
-                                                            !justify-start !items-start !gap-3 !shadow-md !hover:shadow-lg !transition-shadow"
+                                                             !justify-start !items-start !gap-3 !shadow-md !hover:shadow-lg !transition-shadow !left-[220px] !w-[85%] !h-[90px]"
                                     style={{ top: data.top,
-                                             left: '220px',
-                                             backgroundColor: `#${data.backgroundColor}`,
-                                             width: '85%',
-                                             height: '90px' }}>
+                                             backgroundColor: `#${data.backgroundColor}` }}>
                                     <div className="!mt-0.5">
                                         <Icon icon={veterinaryIconsConstants[data.iconIndex]}
                                               width="22" height="22" className="!text-gray-600" />
@@ -405,10 +414,10 @@ const AppointmentCalendar = () => {
                             <div className="!text-xl !font-bold !text-gray-800">Set An Appointment</div>
                         </DialogHeader>
                         <DialogBody className="!flex !flex-col !gap-6 !w-full">
-                            <Formik initialValues={{ veterinaryName: '', veterinaryServices: '', petName: '', petBreed: '',
+                            <Formik<FormValues> initialValues={{ veterinaryName: '', veterinaryServices: '', petName: '', petBreed: '',
                                 petAge: '', petGender: '', petImage: '', ownerName: '', appointmentDate: ''}}
-                                    validate={(values: Record<string, string>) => {
-                                        const errors: Record<string, string> = {};
+                                    validate={(values: FormValues) => {
+                                        const errors: Partial<Record<keyof FormValues, string>> = {};
 
                                         if (!values.veterinaryName) {
                                             errors.veterinaryName = 'Please select a veterinary';
@@ -455,7 +464,7 @@ const AppointmentCalendar = () => {
                                                 petBreed: values.petBreed,
                                                 petAge: parseInt(values.petAge) || 1,
                                                 petGender: values.petGender,
-                                                petImage: buildPetImage((values as any).petImage),
+                                                petImage: buildPetImage(values.petImage),
                                                 ownerName: values.ownerName,
                                                 appointmentDate: values.appointmentDate
                                             })
