@@ -27,7 +27,8 @@ import {
     dayTimeRangeConstants, dummyAppointmentData,
     veterinaryIconsConstants,
     veterinaryInfoConstants,
-    veterinaryServices
+    veterinaryServices,
+    APPOINTMENT_CARD_LEFT_OFFSET
 } from './constants';
 
 import noImage1 from '../assets/appointments/no_image.png';
@@ -163,14 +164,13 @@ const AppointmentCalendar = () => {
         setDisplayAppointmentData(prevState => prevState.filter(data => data.id !== appointmentID))
     }
 
-    const handlePlacingAppointment = (dateTime: any) => {
+    const handlePlacingAppointment = (dateTime: string) => {
         const timeHours = moment(dateTime).hour() > 12 ? moment(dateTime).hour() - 12 : moment(dateTime).hour()
         const timeMins = moment(dateTime).minute()
         const timeAMPM = moment(dateTime).format('a')
 
         const timeIndex = dayTimeRangeConstants.map((data, index) => {
             if (data === `${timeHours.toString()}:00 ${timeAMPM}`)
-            // if (data.includes(timeHours.toString()) && data.includes(timeAMPM))
                 return index
             return 0
         } ).filter((data) => data !== 0)
@@ -178,12 +178,14 @@ const AppointmentCalendar = () => {
         const currentRef = (timeIndex.length > 0 ? calendarDayTimeRef.current[timeIndex[0]] :
             calendarDayTimeRef.current[0]);
 
-        const { top, height } = currentRef.getBoundingClientRect()
+        if (!currentRef) return '0px';
 
-        let topPlacement = top - (height * 2) - (height/2)
+        const { offsetTop, offsetHeight } = currentRef
+
+        let topPlacement = offsetTop - (offsetHeight * 2) - (offsetHeight / 2)
 
         if (timeMins > 0) {
-            topPlacement = topPlacement + (height/2)
+            topPlacement = topPlacement + (offsetHeight / 2)
         }
 
         return `${topPlacement + 4}px`;
@@ -350,8 +352,9 @@ const AppointmentCalendar = () => {
                         if (moment(data.appointmentDate).format('MMMM D YYYY') === moment(currentDate).format('MMMM D YYYY'))
                             return (
                                 <Box key={index} className="!absolute !rounded-xl !p-3 !flex !flex-row
-                                                             !justify-start !items-start !gap-3 !shadow-md !hover:shadow-lg !transition-shadow !left-[220px] !w-[85%] !h-[90px]"
+                                                             !justify-start !items-start !gap-3 !shadow-md !hover:shadow-lg !transition-shadow !w-[85%] !h-[90px]"
                                     style={{ top: data.top,
+                                             left: APPOINTMENT_CARD_LEFT_OFFSET,
                                              backgroundColor: `#${data.backgroundColor}` }}>
                                     <div className="!mt-0.5">
                                         <Icon icon={veterinaryIconsConstants[data.iconIndex]}

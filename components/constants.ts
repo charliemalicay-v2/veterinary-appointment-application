@@ -193,11 +193,14 @@ const veterinaryServices = [
     "Emergency Care"
 ]
 
+const APPOINTMENT_CARD_LEFT_OFFSET = '220px';
+
 export {
     dayTimeRangeConstants,
     dummyAppointmentData,
     sidebarItemsConstants,
     veterinaryIconsConstants,
     veterinaryInfoConstants,
-    veterinaryServices
+    veterinaryServices,
+    APPOINTMENT_CARD_LEFT_OFFSET
 }
