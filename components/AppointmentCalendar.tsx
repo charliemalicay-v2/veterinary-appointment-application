@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import {ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
 
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DatePicker from "react-datepicker";
 
 import { Icon } from '@iconify/react';
@@ -37,18 +36,14 @@ import RightSideDrawer from "./RightSideDrawer";
 import RescheduleModal from "./RescheduleModal";
 
 
-type ValuePiece = Date | null;
-
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-
-interface PetImage {
+export interface PetImage {
     fileObject: File | null;
     fileName: string;
     type: string;
     size: string;
 }
 
-interface AppointmentData {
+export interface AppointmentData {
     id: number;
     veterinaryName: string;
     veterinaryServices: string;
@@ -130,6 +125,13 @@ const AppointmentCalendar = () => {
 
     const { color, generateColor } = useGenerateRandomColor();
 
+    const buildPetImage = (file: unknown): PetImage => ({
+        fileObject: file instanceof File ? file : null,
+        fileName: file instanceof File ? file.name : "",
+        type: file instanceof File ? file.type : "",
+        size: file instanceof File ? `${file.size} bytes` : ""
+    });
+
     const filterPassedTime = (time: Date) => {
         const currentDate = new Date();
         const selectedDate = new Date(time);
@@ -205,8 +207,6 @@ const AppointmentCalendar = () => {
                 iconIndex: Math.floor(Math.random() * veterinaryIconsConstants.length - 1) + 1
         }));
 
-        // console.log("modDummyData:", modDummyData);
-
         if (displayAppointmentData.length === 0) {
             setDisplayAppointmentData(prevState => [
                 ...prevState,
@@ -222,21 +222,17 @@ const AppointmentCalendar = () => {
 
     }, [appointmentData]);
 
+    // Sync month label when day navigation changes the displayed month
     React.useEffect(() => {
         if (currentDate.format("MMMM") !== currentMonth) {
             setCurrentMonth(currentDate.format("MMMM"));
         }
     }, [currentDate]);
 
+    // Sync displayed date when user picks a different month from the menu
     React.useEffect(() => {
         setCurrentDate(moment(currentDate).month(currentMonth));
     }, [currentMonth]);
-
-    // React.useEffect(() => {
-    //     if (displayAppointmentData.length > 0) {
-    //         console.log("displayAppointmentData:", displayAppointmentData);
-    //     }
-    // }, [displayAppointmentData])
 
     React.useEffect(() => {
         if (listAppointmentData.length > 0) {
@@ -258,8 +254,6 @@ const AppointmentCalendar = () => {
         if (selectedAppointmentData.id !== -1 && triggerReSchedDate) {
             setOpenReSchedDate(true);
             setTriggerReSchedDate(false);
-
-            console.log("selectedAppointmentData:", selectedAppointmentData);
 
         }
     }, [selectedAppointmentData]);
@@ -417,35 +411,35 @@ const AppointmentCalendar = () => {
                                         const errors: Record<string, string> = {};
 
                                         if (!values.veterinaryName) {
-                                            errors.veterinaryName = 'Required';
+                                            errors.veterinaryName = 'Please select a veterinary';
                                         }
 
                                         if (!values.veterinaryServices) {
-                                            errors.veterinaryServices = 'Required';
+                                            errors.veterinaryServices = 'Please select a service';
                                         }
 
                                         if (!values.petName) {
-                                            errors.petName = 'Required';
+                                            errors.petName = 'Please enter your pet\'s name';
                                         }
 
                                         if (!values.petBreed) {
-                                            errors.petBreed = 'Required';
+                                            errors.petBreed = 'Please enter your pet\'s breed';
                                         }
 
                                         if (!values.petAge) {
-                                            errors.petAge = 'Required';
+                                            errors.petAge = 'Please enter your pet\'s age';
                                         }
 
                                         if (!values.petGender) {
-                                            errors.petGender = 'Required';
+                                            errors.petGender = 'Please select your pet\'s gender';
                                         }
 
                                         if (!values.ownerName) {
-                                            errors.ownerName = 'Required';
+                                            errors.ownerName = 'Please enter the owner\'s name';
                                         }
 
                                         if (!values.appointmentDate) {
-                                            errors.appointmentDate = 'Required';
+                                            errors.appointmentDate = 'Please select an appointment date';
                                         }
 
                                         return errors;
@@ -461,15 +455,7 @@ const AppointmentCalendar = () => {
                                                 petBreed: values.petBreed,
                                                 petAge: parseInt(values.petAge) || 1,
                                                 petGender: values.petGender,
-                                                petImage: (() => {
-                                                    const file = (values as any).petImage;
-                                                    return {
-                                                        fileObject: file instanceof File ? file : null,
-                                                        fileName: file instanceof File ? file.name : "",
-                                                        type: file instanceof File ? file.type : "",
-                                                        size: file instanceof File ? `${file.size} bytes` : ""
-                                                    };
-                                                })(),
+                                                petImage: buildPetImage((values as any).petImage),
                                                 ownerName: values.ownerName,
                                                 appointmentDate: values.appointmentDate
                                             })

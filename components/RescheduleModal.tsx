@@ -11,8 +11,10 @@ import DatePicker from "react-datepicker";
 import { setHours } from "date-fns/setHours";
 import { setMinutes } from "date-fns/setMinutes";
 
+import {AppointmentData} from "./AppointmentCalendar";
 
-const RescheduleModal = ({ openModal, setOpenModal, appointmentDate, setAppointmentDate }: { openModal: boolean; setOpenModal: (v: boolean) => void; appointmentDate: any; setAppointmentDate: (v: any) => void }) => {
+
+const RescheduleModal = ({ openModal, setOpenModal, appointmentDate, setAppointmentDate }: { openModal: boolean; setOpenModal: (v: boolean) => void; appointmentDate: AppointmentData; setAppointmentDate: (v: AppointmentData) => void }) => {
     const { open, onOpen, onClose } = useDisclosure();
 
     const [startDate, setStartDate] = React.useState(
@@ -26,15 +28,8 @@ const RescheduleModal = ({ openModal, setOpenModal, appointmentDate, setAppointm
         return currentDate.getTime() < selectedDate.getTime();
     };
 
-    React.useEffect(() => {
-        console.log("startDate:", startDate);
-        console.log("appointmentDate:", appointmentDate);
-    }, [startDate]);
-
     return (
         <>
-            {/*<Button onClick={onOpen}>Open Modal</Button>*/}
-
             <DialogRoot open={openModal} onOpenChange={(details) => { if (!details.open) setOpenModal(false) }}>
                 <DialogBackdrop />
                 <DialogPositioner>

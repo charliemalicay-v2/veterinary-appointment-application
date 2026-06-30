@@ -23,9 +23,10 @@ import {
 } from "@chakra-ui/react";
 import {Icon} from "@iconify/react";
 import {veterinaryInfoConstants} from "./constants";
+import {AppointmentData} from "./AppointmentCalendar";
 
 
-const RightSideDrawer = ( { openDrawer, setOpenDrawer, appointmentData }: { openDrawer: boolean; setOpenDrawer: (v: boolean) => void; appointmentData: any } ) => {
+const RightSideDrawer = ( { openDrawer, setOpenDrawer, appointmentData }: { openDrawer: boolean; setOpenDrawer: (v: boolean) => void; appointmentData: AppointmentData } ) => {
     const { open, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef<HTMLButtonElement>(null)
 
@@ -43,10 +44,6 @@ const RightSideDrawer = ( { openDrawer, setOpenDrawer, appointmentData }: { open
             setCurrentVeterinary(currentData[0])
         }
     }, [appointmentData]);
-
-    // React.useEffect(() => {
-    //     console.log("currentVeterinary:", currentVeterinary);
-    // }, [currentVeterinary]);
 
     return (
         <>
